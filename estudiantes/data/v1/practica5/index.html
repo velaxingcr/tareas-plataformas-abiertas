@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Velas - Velaxing</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8f4ee;
+      color: #3f352e;
+    }
+
+    h1 {
+      margin-top: 2rem;
+      text-align: center;
+      color: #5f4939;
+    }
+
+    table {
+      width: 90%;
+      margin: 2rem auto;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: #6f8064;
+      color: white;
+    }
+
+    #mensaje-error {
+      color: #a00000;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Lista de velas</h1>
+
+  <p id="mensaje-error"></p>
+
+  <table id="tabla-velas">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Aroma</th>
+        <th>Tamaño</th>
+        <th>Descripción</th>
+        <th>Precio</th>
+        <th>Stock</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const url = "http://127.0.0.1:5000/estudiantes/api/v1/velas";
+
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        return response.json();
+      })
+      .then(data => {
+        const tbody = document.querySelector("#tabla-velas tbody");
+        tbody.innerHTML = "";
+
+        data.forEach(vela => {
+          const fila = document.createElement("tr");
+
+          fila.innerHTML = `
+            <td>${vela.nombre}</td>
+            <td>${vela.aroma}</td>
+            <td>${vela.tamano}</td>
+            <td>${vela.descripcion}</td>
+            <td>${vela.moneda} ${vela.precio}</td>
+            <td>${vela.stock}</td>
+          `;
+
+          tbody.appendChild(fila);
+        });
+      })
+      .catch(error => {
+        console.error("Error al cargar las velas:", error);
+        document.querySelector("#mensaje-error").textContent =
+          "No se pudieron cargar las velas. Verifique que la API esté en ejecución.";
+      });
+  </script>
+</body>
+</html>
